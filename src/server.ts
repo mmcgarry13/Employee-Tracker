@@ -1,29 +1,38 @@
-import inquirer from 'inquirer';
+import pg from 'pg';
+import express from 'express';
+import { pool, connectToDb } from './connection.js';
 
-const mainInquirer = (): void => {
-    inquirer
-    .prompt([
-        {
-          type: 'list',
-          name: 'mainInquirerPrompt',
-          message: 'What would you like to do?',
-          choices: [
-            'View all departments',
-            'View all roles',
-            'View all employees',
-            'Add a department',
-            'Add a role',
-            'Add an employee',
-            'Update employee role'],
+await connectToDb();
+
+const PORT = process.env.PORT || 3001;
+const app = express();
+
+// Express middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+const showDepartments = async(): Promise<void> => {
+    try {
+        await pool.connect();
+        const result = await pool.query('SELECT * FROM your_table');
+        console.log(result.rows);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    } finally {
+        await pool.end();
+    }
 }
-]);
-      .then((answers) => {
-        answers == answers[1] ? console.log('display all depts FILLER') |
 
-       
-      });
-  };
+app.use((_req, res) => {
+    res.status(404).end();
+  });
+  
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 
+
+export { showDepartments };
 
 
 // GIVEN a command-line application that accepts user input
