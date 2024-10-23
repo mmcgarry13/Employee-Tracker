@@ -7,6 +7,7 @@ CREATE TABLE departments (
   id SERIAL PRIMARY KEY,
   department_name VARCHAR(30),
   FOREIGN KEY (id) REFERENCES employees(id)
+  FOREIGN KEY (department_name) REFERENCES roles(department_name)
 );
 
 CREATE TABLE employees (
@@ -21,9 +22,12 @@ CREATE TABLE employees (
 CREATE TABLE roles  (
     id SERIAL PRIMARY KEY,
     role_name VARCHAR(30),
-    FOREIGN KEY (id) REFERENCES
+    salary INTEGER,
+    department_name VARCHAR (30)
+    FOREIGN KEY (id) REFERENCES employees(employee_role)
+    FOREIGN KEY (department_name) REFERENCES departments(department_name)
 )
 
+JOIN departments ON employees.id = departments.id
+JOIN employees ON roles.id = employees.employee_role
 
-
-view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
